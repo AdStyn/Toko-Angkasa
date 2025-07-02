@@ -27,10 +27,10 @@ const Login: React.FC = () => {
       const role = response.data.user?.role || response.data.role;
       const token = response.data.token;
 
-      if (!role) {
-        setError("Role tidak ditemukan dari server.");
-        return;
-      }
+      // if (!role) {
+      //   setError("Role tidak ditemukan dari server.");
+      //   return;
+      // }
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);

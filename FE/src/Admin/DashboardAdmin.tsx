@@ -1,7 +1,6 @@
-import React, { PureComponent } from "react";
+import React from "react";
 
-export default class Dashboard extends PureComponent {
-  render() {
-    return <div>tes</div>;
-  }
-}
+const DashboardAdmin: React.FC = () => {
+  return <p>dashboardAdmin</p>;
+};
+export default DashboardAdmin;
