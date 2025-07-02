@@ -1,7 +1,8 @@
 import { createBrowserRouter, Outlet } from "react-router-dom";
 import Login from "./page/Login";
 import Register from "./page/Register";
-import Dashboard from "./page/Dashboard";
+import DashboardSadmin from "./Superadmin/DashboardSadmin";
+import DashboardAdmin from "./Admin/DashboardAdmin";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -12,7 +13,11 @@ export const router = createBrowserRouter([
     element: <Register />,
   },
   {
-    path: "/dashboard",
-    element: <Dashboard />,
+    path: "/dashboardSadmin",
+    element: <DashboardSadmin />,
+  },
+  {
+    path: "/dashboardAdmin",
+    element: <DashboardAdmin />,
   },
 ]);

@@ -34,13 +34,12 @@ const Login: React.FC = () => {
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
-
       setError("");
 
       if (role === "SuperAdmin") {
-        navigate("/dashboard");
+        navigate("/dashboardSadmin");
       } else if (role === "Admin") {
-        navigate("/dashboard");
+        navigate("/dashboardAdmin");
       } else {
         alert("peran tidak dikenali");
       }
