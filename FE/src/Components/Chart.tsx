@@ -9,10 +9,8 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 
-// Registrasi Chart.js
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
-// Data per tahun
 const salesData: Record<string, number[]> = {
   2023: [70, 65, 75, 85, 60, 45, 30, 85, 90, 50, 20, 35],
   2024: [80, 70, 90, 100, 70, 50, 40, 90, 95, 60, 30, 40],
@@ -71,7 +69,6 @@ const GrafikPenjualan: React.FC = () => {
 
   return (
     <div className="bg-white rounded-xl shadow p-4 sm:p-6 w-full">
-      {/* Judul Toko + Selector */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
         <div>
           <h2 className="text-sm sm:text-2xl font-semibold text-gray-800">
@@ -79,7 +76,6 @@ const GrafikPenjualan: React.FC = () => {
           </h2>
         </div>
 
-        {/* Selector Tahun */}
         <select
           value={selectedYear}
           onChange={(e) => setSelectedYear(e.target.value)}
@@ -93,7 +89,6 @@ const GrafikPenjualan: React.FC = () => {
         </select>
       </div>
 
-      {/* Grafik */}
       <div className="h-60 sm:h-72 md:h-80">
         <Bar data={data} options={options} />
       </div>

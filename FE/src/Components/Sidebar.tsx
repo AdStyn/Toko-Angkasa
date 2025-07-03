@@ -129,7 +129,7 @@ const SidebarLayout: React.FC<{ children?: React.ReactNode }> = ({
 };
 
 const SidebarContent = () => (
-  <nav className="space-y-4 text-base">
+  <nav className="space-y-6 text-xl">
     <NavItem icon={<FaTachometerAlt />} label="Dashboard" active />
     <NavItem icon={<FaCashRegister />} label="Kasir" />
     <NavItem icon={<FaBox />} label="Produk" />
@@ -150,7 +150,7 @@ const NavItem = ({
   return (
     <div
       className={`flex items-center gap-4 px-4 py-3 rounded-lg cursor-pointer transition-all ${
-        active ? "bg-blue-500 text-white" : "text-gray-700 hover:bg-gray-100"
+        active ? "bg-[#4D81F1] text-white" : "text-gray-700 hover:bg-gray-100"
       }`}
     >
       <span className="text-xl">{icon}</span>
