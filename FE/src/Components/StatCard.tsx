@@ -29,7 +29,7 @@ const StatCard: React.FC<StatCardProps> = ({
       <h3 className="text-2xl font-semibold">{title}</h3>
 
       {/* Value */}
-      <p className="text-5xl font-bold mt-4">{amount}</p>
+      <p className="text-4xl font-bold mt-4">{amount}</p>
 
       {/* Trend */}
       <div className="flex items-center gap-3 mt-5">

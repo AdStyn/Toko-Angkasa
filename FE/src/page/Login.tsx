@@ -37,9 +37,9 @@ const Login: React.FC = () => {
       setError("");
 
       if (role === "SuperAdmin") {
-        navigate("/dashboardSadmin");
+        navigate("/dashboard");
       } else if (role === "Admin") {
-        navigate("/dashboardAdmin");
+        navigate("/dashboard");
       } else {
         alert("peran tidak dikenali");
       }
