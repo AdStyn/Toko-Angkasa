@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../Components/Sidebar";
 import StatCard from "../Components/StatCard";
 import Chart from "../Components/Chart";
 import StokRendah from "../Components/StokRendah";
+import axios from "axios";
 
 const DashboardAdmin: React.FC = () => {
   const tanggalSekarang = new Date().toLocaleDateString("id-ID", {
@@ -10,6 +11,57 @@ const DashboardAdmin: React.FC = () => {
     month: "numeric",
     day: "numeric",
   });
+
+  const [pengeluaranSekarang, setPengeluaranSekarang] = useState(0);
+  const [pengeluaranSebelumnya, setPengeluaranSebelumnya] = useState(0);
+
+  useEffect(() => {
+    const fetchPengeluaran = async () => {
+      try {
+        const now = new Date();
+        const bulan = now.getMonth() + 1;
+        const tahun = now.getFullYear();
+
+        const resSekarang = await axios.get(
+          `https://grx6wqmr-3004.asse.devtunnels.ms/transaksi/pengeluaran?bulan=${bulan}&tahun=${tahun}`
+        );
+
+        console.log("✅ Data pengeluaran bulan sekarang:", resSekarang.data);
+
+        const totalSekarang = resSekarang.data.data.reduce(
+          (acc: number, item: any) => acc + (item.hargaperTransaksi || 0),
+          0
+        );
+
+        console.log("💸 Total pengeluaran bulan ini:", totalSekarang);
+        setPengeluaranSekarang(totalSekarang);
+
+        const bulanLalu = bulan - 1 === 0 ? 12 : bulan - 1;
+        const tahunLalu = bulan - 1 === 0 ? tahun - 1 : tahun;
+
+        const resSebelumnya = await axios.get(
+          `https://grx6wqmr-3004.asse.devtunnels.ms/transaksi/pengeluaran?bulan=${bulanLalu}&tahun=${tahunLalu}`
+        );
+
+        console.log(
+          "📦 Data pengeluaran bulan sebelumnya:",
+          resSebelumnya.data
+        );
+
+        const totalSebelumnya = resSebelumnya.data.data.reduce(
+          (acc: number, item: any) => acc + (item.hargaperTransaksi || 0),
+          0
+        );
+
+        console.log("📊 Total pengeluaran bulan lalu:", totalSebelumnya);
+        setPengeluaranSebelumnya(totalSebelumnya);
+      } catch (error) {
+        console.error("❌ Gagal mengambil data pengeluaran", error);
+      }
+    };
+
+    fetchPengeluaran();
+  }, []);
 
   return (
     <Sidebar>
@@ -42,9 +94,9 @@ const DashboardAdmin: React.FC = () => {
         />
         <StatCard
           title="Pengeluaran"
-          amount="Rp. 0"
-          currentValue={0}
-          previousValue={0}
+          amount={`Rp. ${pengeluaranSekarang.toLocaleString("id-ID")}`}
+          currentValue={pengeluaranSekarang}
+          previousValue={pengeluaranSebelumnya}
         />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -27,10 +27,10 @@ const Login: React.FC = () => {
       const role = response.data.user?.role || response.data.role;
       const token = response.data.token;
 
-      // if (!role) {
-      //   setError("Role tidak ditemukan dari server.");
-      //   return;
-      // }
+      if (!role || !token) {
+        setError("Peran atau token tidak ditemukan dalam respons.");
+        return;
+      }
 
       localStorage.setItem("token", token);
       localStorage.setItem("role", role);
@@ -111,7 +111,7 @@ const Login: React.FC = () => {
 
         {/* Link ke Register */}
         <p className="text-sm text-center text-gray-500 mt-4">
-          Belum punya akun?{" "}
+          Belum punya akun?{""}
           <a
             href="/register"
             className="text-blue-600 hover:underline font-semibold"

@@ -46,7 +46,7 @@ const SidebarLayout: React.FC<{ children?: React.ReactNode }> = ({
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/");
+    navigate("/login");
   };
 
   return (
