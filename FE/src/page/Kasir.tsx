@@ -1,13 +1,8 @@
 import React from "react";
+import Sidebar from "../Components/Sidebar";
 
-function Kasir() {
-  return (
-    <div>
-      <h1 className="text-3xl font-bold text-center mt-10">Kasir Page</h1>
-      <p className="text-center mt-4">This is the Kasir page content.</p>
-      {/* Add more content or components as needed */}
-    </div>
-  );
-}
+const Kasir: React.FC = () => {
+  return <Sidebar>Kasir</Sidebar>;
+};
 
 export default Kasir;

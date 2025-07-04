@@ -10,7 +10,7 @@ import {
   FaTimes,
 } from "react-icons/fa";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const SidebarLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
@@ -56,8 +56,7 @@ const SidebarLayout: React.FC<{ children?: React.ReactNode }> = ({
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(true)}
-            style={{ backgroundColor: "white" }}
-            className="text-2xl md:hidden text-[#4D81F1] shadow-sm border-[#4D81F1] hover:bg-blue-800"
+            className="text-2xl md:hidden text-[#4D81F1]"
           >
             <FaBars />
           </button>
@@ -106,8 +105,7 @@ const SidebarLayout: React.FC<{ children?: React.ReactNode }> = ({
               <span className="text-lg text-[#4D81F1] font-bold">Menu</span>
               <button
                 onClick={() => setSidebarOpen(false)}
-                style={{ backgroundColor: "red" }}
-                className="text-white rounded-full p-2 hover:bg-blue-800"
+                className="text-white bg-red-500 rounded-full p-2"
               >
                 <FaTimes size={20} />
               </button>
@@ -116,7 +114,7 @@ const SidebarLayout: React.FC<{ children?: React.ReactNode }> = ({
           </div>
 
           <div
-            className="flex-1 bg-opacity-40"
+            className="flex-1 bg-black bg-opacity-40"
             onClick={() => setSidebarOpen(false)}
           />
         </div>
@@ -128,34 +126,66 @@ const SidebarLayout: React.FC<{ children?: React.ReactNode }> = ({
   );
 };
 
-const SidebarContent = () => (
-  <nav className="space-y-6 text-xl">
-    <NavItem icon={<FaTachometerAlt />} label="Dashboard" active />
-    <NavItem icon={<FaCashRegister />} label="Kasir" />
-    <NavItem icon={<FaBox />} label="Produk" />
-    <NavItem icon={<FaHistory />} label="Histori" />
-    <NavItem icon={<FaUsers />} label="Pelanggan" />
-  </nav>
-);
+// Sidebar Content
+const SidebarContent = () => {
+  const location = useLocation();
+  const path = location.pathname;
 
-const NavItem = ({
-  icon,
-  label,
-  active = false,
-}: {
+  return (
+    <nav className="space-y-6 text-xl">
+      <NavItem
+        icon={<FaTachometerAlt />}
+        label="Dashboard"
+        to="/dashboard"
+        active={path === "/dashboard"}
+      />
+      <NavItem
+        icon={<FaCashRegister />}
+        label="Kasir"
+        to="/kasir"
+        active={path === "/kasir"}
+      />
+      <NavItem
+        icon={<FaBox />}
+        label="Produk"
+        to="/produk"
+        active={path === "/produk"}
+      />
+      <NavItem
+        icon={<FaHistory />}
+        label="Histori"
+        to="/histori"
+        active={path === "/histori"}
+      />
+      <NavItem
+        icon={<FaUsers />}
+        label="Pelanggan"
+        to="/pelanggan"
+        active={path === "/pelanggan"}
+      />
+    </nav>
+  );
+};
+
+// NavItem Component
+type NavItemProps = {
   icon: React.ReactNode;
   label: string;
+  to: string;
   active?: boolean;
-}) => {
+};
+
+const NavItem = ({ icon, label, to, active = false }: NavItemProps) => {
   return (
-    <div
-      className={`flex items-center gap-4 px-4 py-3 rounded-lg cursor-pointer transition-all ${
+    <Link
+      to={to}
+      className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
         active ? "bg-[#4D81F1] text-white" : "text-gray-700 hover:bg-gray-100"
       }`}
     >
       <span className="text-xl">{icon}</span>
       <span className="font-medium">{label}</span>
-    </div>
+    </Link>
   );
 };
 
