@@ -1,6 +1,37 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+type Produk = {
+  id: number;
+  nama: string;
+  kategori: string;
+  stok: number;
+};
 
 const StokRendah: React.FC = () => {
+  const [produkMinimum, setProdukMinimum] = useState<Produk[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchMinimumStok = async () => {
+      try {
+        const response = await axios.get(
+          "https://grx6wqmr-3004.asse.devtunnels.ms/product/minimum"
+        );
+        setProdukMinimum(response.data);
+        setError("");
+      } catch (err: any) {
+        if (err.response?.status === 404) {
+          setProdukMinimum([]);
+        } else {
+          setError("Gagal mengambil data stok minimum.");
+        }
+      }
+    };
+
+    fetchMinimumStok();
+  }, []);
+
   return (
     <div className="bg-white rounded-xl shadow p-4 sm:p-6 w-full overflow-hidden">
       {/* Header */}
@@ -10,7 +41,7 @@ const StokRendah: React.FC = () => {
         </h2>
       </div>
 
-      {/* Table wrapper */}
+      {/* Table */}
       <div className="w-full overflow-x-auto">
         <table className="min-w-[500px] w-full border-collapse text-xs sm:text-sm">
           <thead>
@@ -22,24 +53,35 @@ const StokRendah: React.FC = () => {
             </tr>
           </thead>
           <tbody className="text-gray-700">
-            {["produk a", "produk b", "produk c", "produk d", "produk e"].map(
-              (produk, i) => (
+            {produkMinimum.length === 0 ? (
+              <tr className="border-t">
+                <td
+                  colSpan={4}
+                  className="px-3 py-3 text-center text-gray-500 italic"
+                >
+                  Tidak ada produk dengan stok kurang dari 10 biji
+                </td>
+              </tr>
+            ) : (
+              produkMinimum.map((produk, i) => (
                 <tr
-                  key={i}
+                  key={produk.id}
                   className="border-t hover:bg-gray-100 transition-colors"
                 >
                   <td className="px-3 py-2">{i + 1}</td>
-                  <td className="px-3 py-2 capitalize">{produk}</td>
-                  <td className="px-3 py-2 capitalize">
-                    Kategori {String.fromCharCode(97 + i)}
-                  </td>
-                  <td className="px-3 py-2">3</td>
+                  <td className="px-3 py-2 capitalize">{produk.nama}</td>
+                  <td className="px-3 py-2 capitalize">{produk.kategori}</td>
+                  <td className="px-3 py-2">{produk.stok}</td>
                 </tr>
-              )
+              ))
             )}
           </tbody>
         </table>
       </div>
+
+      {error && (
+        <p className="text-red-500 text-sm mt-4 text-center">{error}</p>
+      )}
     </div>
   );
 };

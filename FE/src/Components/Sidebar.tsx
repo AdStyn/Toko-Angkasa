@@ -12,9 +12,7 @@ import {
 import axios from "axios";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const SidebarLayout: React.FC<{ children?: React.ReactNode }> = ({
-  children,
-}) => {
+const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   const [role, setRole] = useState<string>("");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -126,7 +124,6 @@ const SidebarLayout: React.FC<{ children?: React.ReactNode }> = ({
   );
 };
 
-// Sidebar Content
 const SidebarContent = () => {
   const location = useLocation();
   const path = location.pathname;
@@ -179,14 +176,26 @@ const NavItem = ({ icon, label, to, active = false }: NavItemProps) => {
   return (
     <Link
       to={to}
-      className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
-        active ? "bg-[#4D81F1] text-white" : "text-gray-700 hover:bg-gray-100"
+      className={`group flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
+        active ? "bg-[#4D81F1] text-white" : "text-black hover:bg-blue-100"
       }`}
     >
-      <span className="text-xl">{icon}</span>
-      <span className="font-medium">{label}</span>
+      <span
+        className={`text-xl ${
+          active ? "text-white" : "text-black group-hover:text-black"
+        }`}
+      >
+        {icon}
+      </span>
+      <span
+        className={`font-semibold ${
+          active ? "text-white" : "text-black group-hover:text-black"
+        }`}
+      >
+        {label}
+      </span>
     </Link>
   );
 };
 
-export default SidebarLayout;
+export default Sidebar;
