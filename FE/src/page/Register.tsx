@@ -151,10 +151,7 @@ const Register: React.FC = () => {
         {/* Link ke Login */}
         <p className="text-sm text-center text-gray-500 mt-4">
           Sudah punya akun?{" "}
-          <a
-            href="/login"
-            className="text-cyan-600 hover:underline font-semibold"
-          >
+          <a href="/" className="text-cyan-600 hover:underline font-semibold">
             Masuk di sini
           </a>
         </p>

@@ -44,7 +44,7 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
   return (
@@ -54,7 +54,14 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="text-2xl md:hidden text-[#4D81F1]"
+            style={{
+              backgroundColor: "#4D81F1",
+              color: "white",
+              padding: "8px",
+              borderRadius: "6px",
+              fontSize: "1.5rem",
+            }}
+            className="md:hidden"
           >
             <FaBars />
           </button>
@@ -103,7 +110,7 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
               <span className="text-lg text-[#4D81F1] font-bold">Menu</span>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="text-white bg-red-500 rounded-full p-2"
+                className="text-white bg-[#4D81F1] p-2 rounded-md md:hidden"
               >
                 <FaTimes size={20} />
               </button>
@@ -112,7 +119,7 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
           </div>
 
           <div
-            className="flex-1 bg-black bg-opacity-40"
+            className="flex-1 bg-opacity-40"
             onClick={() => setSidebarOpen(false)}
           />
         </div>
