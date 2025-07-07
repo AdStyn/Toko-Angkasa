@@ -48,18 +48,18 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-gray-50">
+    <div className="flex flex-col min-h-screen w-full bg-gray-50 overflow-x-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white shadow px-4 sm:px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-50 bg-white shadow px-2 sm:px-6 py-2 sm:py-4 flex justify-between items-center">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={() => setSidebarOpen(true)}
             style={{
               backgroundColor: "#4D81F1",
               color: "white",
-              padding: "8px",
+              padding: "6px",
               borderRadius: "6px",
-              fontSize: "1.5rem",
+              fontSize: "1.2rem",
             }}
             className="md:hidden"
           >
@@ -68,7 +68,7 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
           <img
             src="/logo.png"
             alt="Logo Toko Angkasa"
-            className="h-10 sm:h-14 w-auto"
+            className="h-8 sm:h-14 w-auto"
           />
         </div>
 
@@ -77,18 +77,20 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             style={{ backgroundColor: "#D5DAE0" }}
-            className="flex items-center gap-2 bg-gray-100 px-3 py-1 rounded-xl text-sm sm:text-base"
+            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-xl text-xs sm:text-base"
           >
-            <FaUserCircle className="text-xl text-black" />
-            <span className="font-semibold text-black">{role}</span>
+            <FaUserCircle className="text-base sm:text-xl text-black" />
+            <span className="font-semibold text-black truncate max-w-[80px] sm:max-w-none">
+              {role}
+            </span>
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+            <div className="absolute right-0 mt-2 w-36 sm:w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <button
                 onClick={handleLogout}
                 style={{ backgroundColor: "red" }}
-                className="w-full text-center px-4 py-2 text-sm text-white hover:bg-gray-100 rounded-md transition duration-150"
+                className="w-full text-center px-4 py-2 text-xs sm:text-sm text-white hover:bg-gray-100 rounded-md transition duration-150"
               >
                 Keluar
               </button>
@@ -98,35 +100,38 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
       </header>
 
       {/* Sidebar - Desktop */}
-      <div className="hidden md:flex w-72 fixed top-[80px] left-0 h-[calc(100vh-80px)] bg-white border-r shadow-sm flex-col py-6 px-4">
+      <div className="hidden md:flex w-64 fixed top-[68px] left-0 h-[calc(100vh-68px)] bg-white border-r shadow-sm flex-col py-4 px-3">
         <SidebarContent />
       </div>
 
       {/* Sidebar - Mobile Drawer */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-[999] flex md:hidden">
-          <div className="w-64 bg-white shadow-xl p-4 h-full overflow-y-auto">
-            <div className="flex justify-between items-center mb-6">
-              <span className="text-lg text-[#4D81F1] font-bold">Menu</span>
+          <div className="w-60 bg-white shadow-xl p-3 h-full overflow-y-auto relative z-[1000]">
+            <div className="flex justify-between items-center mb-4">
+              <span className="text-base text-[#4D81F1] font-bold">Menu</span>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="text-white bg-[#4D81F1] p-2 rounded-md md:hidden"
+                className="text-white bg-[#4D81F1] p-2 rounded-md"
               >
-                <FaTimes size={20} />
+                <FaTimes size={18} />
               </button>
             </div>
             <SidebarContent />
           </div>
 
+          {/* Klik area luar untuk menutup */}
           <div
-            className="flex-1 bg-opacity-40"
+            className="flex-1  bg-opacity-30"
             onClick={() => setSidebarOpen(false)}
           />
         </div>
       )}
 
       {/* Content */}
-      <main className="flex-1 md:ml-72 p-4 sm:p-6">{children}</main>
+      <main className="flex-1 md:ml-64 p-3 sm:p-4 overflow-x-auto">
+        {children}
+      </main>
     </div>
   );
 };
@@ -136,7 +141,7 @@ const SidebarContent = () => {
   const path = location.pathname;
 
   return (
-    <nav className="space-y-6 text-xl">
+    <nav className="space-y-4 text-base">
       <NavItem
         icon={<FaTachometerAlt />}
         label="Dashboard"
@@ -183,19 +188,19 @@ const NavItem = ({ icon, label, to, active = false }: NavItemProps) => {
   return (
     <Link
       to={to}
-      className={`group flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
+      className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-sm sm:text-base ${
         active ? "bg-[#4D81F1] text-white" : "text-black hover:bg-blue-100"
       }`}
     >
       <span
-        className={`text-xl ${
+        className={`text-lg ${
           active ? "text-white" : "text-black group-hover:text-black"
         }`}
       >
         {icon}
       </span>
       <span
-        className={`font-semibold ${
+        className={`font-semibold truncate ${
           active ? "text-white" : "text-black group-hover:text-black"
         }`}
       >

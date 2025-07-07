@@ -68,18 +68,17 @@ const GrafikPenjualan: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-4 sm:p-6 w-full">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-        <div>
-          <h2 className="text-sm sm:text-2xl font-semibold text-gray-800">
-            Grafik Penjualan
-          </h2>
-        </div>
+    <div className="bg-white rounded-xl shadow px-4 py-4 sm:p-6 w-full">
+      {/* Header: Judul + Dropdown */}
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0 mb-4">
+        <h2 className="text-base sm:text-2xl font-semibold text-gray-800">
+          Grafik Penjualan
+        </h2>
 
         <select
           value={selectedYear}
           onChange={(e) => setSelectedYear(e.target.value)}
-          className="mt-3 sm:mt-0 border rounded px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border rounded px-3 py-1.5 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 w-fit"
         >
           {Object.keys(salesData).map((year) => (
             <option key={year} value={year}>
@@ -89,6 +88,7 @@ const GrafikPenjualan: React.FC = () => {
         </select>
       </div>
 
+      {/* Chart */}
       <div className="h-60 sm:h-72 md:h-80">
         <Bar data={data} options={options} />
       </div>

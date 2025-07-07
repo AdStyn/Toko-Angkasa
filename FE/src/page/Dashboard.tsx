@@ -26,14 +26,10 @@ const DashboardAdmin: React.FC = () => {
           `https://grx6wqmr-3004.asse.devtunnels.ms/transaksi/pengeluaran?bulan=${bulan}&tahun=${tahun}`
         );
 
-        console.log("✅ Data pengeluaran bulan sekarang:", resSekarang.data);
-
         const totalSekarang = resSekarang.data.data.reduce(
           (acc: number, item: any) => acc + (item.hargaperTransaksi || 0),
           0
         );
-
-        console.log("💸 Total pengeluaran bulan ini:", totalSekarang);
         setPengeluaranSekarang(totalSekarang);
 
         const bulanLalu = bulan - 1 === 0 ? 12 : bulan - 1;
@@ -43,17 +39,10 @@ const DashboardAdmin: React.FC = () => {
           `https://grx6wqmr-3004.asse.devtunnels.ms/transaksi/pengeluaran?bulan=${bulanLalu}&tahun=${tahunLalu}`
         );
 
-        console.log(
-          "📦 Data pengeluaran bulan sebelumnya:",
-          resSebelumnya.data
-        );
-
         const totalSebelumnya = resSebelumnya.data.data.reduce(
           (acc: number, item: any) => acc + (item.hargaperTransaksi || 0),
           0
         );
-
-        console.log("📊 Total pengeluaran bulan lalu:", totalSebelumnya);
         setPengeluaranSebelumnya(totalSebelumnya);
       } catch (error) {
         console.error("❌ Gagal mengambil data pengeluaran", error);
@@ -65,8 +54,9 @@ const DashboardAdmin: React.FC = () => {
 
   return (
     <Sidebar>
+      {/* Header Dashboard */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-800 text-left sm:text-start">
+        <h1 className="text-xl sm:text-2xl font-bold text-gray-800 text-left">
           Dashboard
         </h1>
 
@@ -79,6 +69,8 @@ const DashboardAdmin: React.FC = () => {
           </p>
         </div>
       </div>
+
+      {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-6">
         <StatCard
           title="Laba"
@@ -99,6 +91,8 @@ const DashboardAdmin: React.FC = () => {
           previousValue={pengeluaranSebelumnya}
         />
       </div>
+
+      {/* Chart dan Stok Menipis */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Chart />
         <StokRendah />
