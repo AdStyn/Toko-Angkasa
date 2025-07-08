@@ -22,7 +22,7 @@ const Login: React.FC = () => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log("Response full:", response.data); // Cek struktur dulu
+      console.log("Response full:", response.data);
 
       const role = response.data.user?.role || response.data.role;
       const token = response.data.token;

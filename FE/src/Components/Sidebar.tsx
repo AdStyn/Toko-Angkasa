@@ -48,49 +48,43 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen w-full bg-gray-50 overflow-x-hidden">
+    <div className="flex flex-col min-h-screen w-full bg-gray-50">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white shadow px-2 sm:px-6 py-2 sm:py-4 flex justify-between items-center">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <header className="sticky top-0 z-50 bg-white shadow px-4 sm:px-6 py-4 flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          {/* Hamburger button */}
           <button
             onClick={() => setSidebarOpen(true)}
-            style={{
-              backgroundColor: "#4D81F1",
-              color: "white",
-              padding: "6px",
-              borderRadius: "6px",
-              fontSize: "1.2rem",
-            }}
-            className="md:hidden"
+            style={{ backgroundColor: "#4D81F1" }}
+            className="md:hidden z-[100] text-white p-2 rounded-md text-2xl"
           >
             <FaBars />
           </button>
           <img
             src="/logo.png"
             alt="Logo Toko Angkasa"
-            className="h-8 sm:h-14 w-auto"
+            className="h-7 sm:h-12 w-auto"
           />
         </div>
 
-        {/* Role + Dropdown */}
         <div className="relative">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             style={{ backgroundColor: "#D5DAE0" }}
-            className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 rounded-xl text-xs sm:text-base"
+            className="flex items-center gap-1 sm:gap-2 bg-gray-100 px-2 sm:px-3 py-1 sm:py-2 rounded-xl text-xs sm:text-base"
           >
-            <FaUserCircle className="text-base sm:text-xl text-black" />
+            <FaUserCircle className="text-lg sm:text-xl text-black" />
             <span className="font-semibold text-black truncate max-w-[80px] sm:max-w-none">
               {role}
             </span>
           </button>
 
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-36 sm:w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+            <div className="absolute right-0 mt-2 w-32 sm:w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <button
                 onClick={handleLogout}
                 style={{ backgroundColor: "red" }}
-                className="w-full text-center px-4 py-2 text-xs sm:text-sm text-white hover:bg-gray-100 rounded-md transition duration-150"
+                className="w-full text-center px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-white hover:bg-gray-100 rounded-md transition duration-150"
               >
                 Keluar
               </button>
@@ -100,19 +94,22 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
       </header>
 
       {/* Sidebar - Desktop */}
-      <div className="hidden md:flex w-64 fixed top-[68px] left-0 h-[calc(100vh-68px)] bg-white border-r shadow-sm flex-col py-4 px-3">
+      <div className="hidden md:flex w-72 fixed top-[80px] left-0 h-[calc(100vh-80px)] bg-white border-r shadow-sm flex-col py-6 px-4">
         <SidebarContent />
       </div>
 
       {/* Sidebar - Mobile Drawer */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-[999] flex md:hidden">
-          <div className="w-60 bg-white shadow-xl p-3 h-full overflow-y-auto relative z-[1000]">
-            <div className="flex justify-between items-center mb-4">
-              <span className="text-base text-[#4D81F1] font-bold">Menu</span>
+          <div className="w-[75%] max-w-[240px] min-w-[220px] bg-white shadow-xl p-4 h-full overflow-y-auto relative z-[1000]">
+            <div className="flex justify-between items-center mb-6">
+              <span className="text-base sm:text-lg text-[#4D81F1] font-bold">
+                Menu
+              </span>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="text-white bg-[#4D81F1] p-2 rounded-md"
+                style={{ backgroundColor: "red" }}
+                className="text-white p-2 rounded-md"
               >
                 <FaTimes size={18} />
               </button>
@@ -120,18 +117,15 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
             <SidebarContent />
           </div>
 
-          {/* Klik area luar untuk menutup */}
           <div
-            className="flex-1  bg-opacity-30"
+            className="flex-1 bg-opacity-30"
             onClick={() => setSidebarOpen(false)}
           />
         </div>
       )}
 
       {/* Content */}
-      <main className="flex-1 md:ml-64 p-3 sm:p-4 overflow-x-auto">
-        {children}
-      </main>
+      <main className="flex-1 md:ml-72 p-4 sm:p-6">{children}</main>
     </div>
   );
 };
@@ -141,7 +135,7 @@ const SidebarContent = () => {
   const path = location.pathname;
 
   return (
-    <nav className="space-y-4 text-base">
+    <nav className="space-y-6 text-xl">
       <NavItem
         icon={<FaTachometerAlt />}
         label="Dashboard"
@@ -176,7 +170,6 @@ const SidebarContent = () => {
   );
 };
 
-// NavItem Component
 type NavItemProps = {
   icon: React.ReactNode;
   label: string;
@@ -188,19 +181,19 @@ const NavItem = ({ icon, label, to, active = false }: NavItemProps) => {
   return (
     <Link
       to={to}
-      className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-sm sm:text-base ${
+      className={`group flex items-center gap-4 px-4 py-3 rounded-lg transition-all ${
         active ? "bg-[#4D81F1] text-white" : "text-black hover:bg-blue-100"
       }`}
     >
       <span
-        className={`text-lg ${
+        className={`text-xl ${
           active ? "text-white" : "text-black group-hover:text-black"
         }`}
       >
         {icon}
       </span>
       <span
-        className={`font-semibold truncate ${
+        className={`font-semibold ${
           active ? "text-white" : "text-black group-hover:text-black"
         }`}
       >
