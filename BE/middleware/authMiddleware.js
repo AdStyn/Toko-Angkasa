@@ -9,12 +9,12 @@ function jwtverify(req, res, next) {
 
   try {
     if (token.startsWith("Bearer ")) {
-      token = token.split(" ")[1]; // Ambil token setelah "Bearer "
+      token = token.split(" ")[1];
     }
 
     const decoded = jwt.verify(token, "lucky");
     req.userId = decoded.userId;
-    req.role = decoded.role; // Tambahkan role jika dibutuhkan
+    req.role = decoded.role;
     next();
   } catch (error) {
     console.error("Token verification error:", error);

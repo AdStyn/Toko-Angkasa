@@ -47,5 +47,16 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ error: "Login failed" });
   }
 });
+router.get("/data_user", jwtverify, async (req, res) => {
+  try {
+    const data_user = await models.user.findOne({
+      where: { id: req.userId },
+      attributes: ["id", "name", "role"],
+    });
+    return res.status(200).json({ data_user });
+  } catch (error) {
+    return res.status(400).json({ responseCode: 400, message: error.message });
+  }
+});
 
 module.exports = router;
