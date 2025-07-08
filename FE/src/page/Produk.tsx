@@ -9,8 +9,8 @@ type Produk = {
   id: number;
   nama: string;
   kategori: string;
-  stok: number;
-  harga: number;
+  stokAsPack: string;
+  harga: number | null;
 };
 
 const Produk: React.FC = () => {
@@ -28,6 +28,7 @@ const Produk: React.FC = () => {
       const res = await axios.get(
         "https://grx6wqmr-3004.asse.devtunnels.ms/product/show_product"
       );
+
       setProdukList(res.data);
       setFilteredList(res.data);
     } catch (error) {
@@ -44,6 +45,14 @@ const Produk: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const extractStok = (stokStr: string): number => {
+      const match = stokStr.match(/(\d+)\s*pack(?:\s*\+\s*(\d+)\s*pcs)?/);
+      if (!match) return 0;
+      const pack = parseInt(match[1]) || 0;
+      const pcs = parseInt(match[2]) || 0;
+      return pack * 1_000 + pcs;
+    };
+
     const lower = searchQuery.toLowerCase();
     const hasil = produkList.filter((item) =>
       item.nama.toLowerCase().includes(lower)
@@ -52,16 +61,20 @@ const Produk: React.FC = () => {
     let sorted = [...hasil];
     switch (filter) {
       case "harga_terendah":
-        sorted.sort((a, b) => a.harga - b.harga);
+        sorted.sort((a, b) => (a.harga ?? 0) - (b.harga ?? 0));
         break;
       case "harga_tertinggi":
-        sorted.sort((a, b) => b.harga - a.harga);
+        sorted.sort((a, b) => (b.harga ?? 0) - (a.harga ?? 0));
         break;
       case "stok_terendah":
-        sorted.sort((a, b) => a.stok - b.stok);
+        sorted.sort(
+          (a, b) => extractStok(a.stokAsPack) - extractStok(b.stokAsPack)
+        );
         break;
       case "stok_tertinggi":
-        sorted.sort((a, b) => b.stok - a.stok);
+        sorted.sort(
+          (a, b) => extractStok(b.stokAsPack) - extractStok(a.stokAsPack)
+        );
         break;
     }
 
@@ -75,6 +88,7 @@ const Produk: React.FC = () => {
           Produk
         </h1>
       </div>
+
       <div className="w-full flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between py-2">
         <div className="w-full flex flex-col sm:flex-row gap-2 sm:items-center sm:w-auto">
           <div className="flex items-center bg-gray-200 rounded-full px-3 py-2 w-full sm:w-64">
@@ -143,9 +157,12 @@ const Produk: React.FC = () => {
                   <td className="px-4 py-3">{i + 1}.</td>
                   <td className="px-4 py-3 capitalize">{produk.nama}</td>
                   <td className="px-4 py-3 capitalize">{produk.kategori}</td>
-                  <td className="px-4 py-3">{produk.stok}</td>
+                  <td className="px-4 py-3">{produk.stokAsPack ?? "-"}</td>
+
                   <td className="px-4 py-3">
-                    {produk.harga.toLocaleString("id-ID")}
+                    {typeof produk.harga === "number"
+                      ? produk.harga.toLocaleString("id-ID")
+                      : "-"}
                   </td>
                   <td className="px-4 py-3 text-center">
                     {role === "SuperAdmin" && (
@@ -192,9 +209,15 @@ const Produk: React.FC = () => {
             fetchProduk();
           }}
           initialData={{
-            ...selectedProduk,
-            harga: selectedProduk.harga.toString(),
-            stok: selectedProduk.stok.toString(),
+            id: selectedProduk.id,
+            nama: selectedProduk.nama,
+            harga: selectedProduk.harga?.toString() ?? "0",
+            hargabeli: "0",
+            kategori: selectedProduk.kategori,
+            stok: selectedProduk.stokAsPack ?? "0",
+            stokbaru: "",
+            setpack: "",
+            hargaGrosir: "0",
           }}
         />
       )}

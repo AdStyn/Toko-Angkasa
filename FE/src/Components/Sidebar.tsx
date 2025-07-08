@@ -83,7 +83,7 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
             <div className="absolute right-0 mt-2 w-32 sm:w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
               <button
                 onClick={handleLogout}
-                style={{ backgroundColor: "red" }}
+                style={{ backgroundColor: "#FF4B4B" }}
                 className="w-full text-center px-2 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm text-white hover:bg-gray-100 rounded-md transition duration-150"
               >
                 Keluar
@@ -108,7 +108,7 @@ const Sidebar: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
               </span>
               <button
                 onClick={() => setSidebarOpen(false)}
-                style={{ backgroundColor: "red" }}
+                style={{ backgroundColor: "#FF4B4B" }}
                 className="text-white p-2 rounded-md"
               >
                 <FaTimes size={18} />

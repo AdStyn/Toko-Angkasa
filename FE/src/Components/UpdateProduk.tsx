@@ -8,39 +8,43 @@ interface ModalProps {
   initialData: {
     id: number;
     nama: string;
-    kategori: string;
     harga: string;
+    hargabeli?: string;
+    kategori: string;
     stok: string;
+    stokbaru?: string;
+    setpack: string;
+    hargaGrosir: string;
   };
 }
 
-const ModalUpdateProduk: React.FC<ModalProps> = ({
+const UpdateProduk: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   onSuccess,
   initialData,
 }) => {
-  const [formData, setFormData] = useState({
-    nama: "",
-    kategori: "",
-    harga: "",
-    hargabeli: "",
-    hargaGrosir: "",
-    setpack: "",
-    stok: "",
-  });
-
-  const [showKategoriBaru, setShowKategoriBaru] = useState(false);
+  const [formData, setFormData] = useState(initialData);
+  const [kategoriList, setKategoriList] = useState<string[]>([]);
+  const [showInputKategoriBaru, setShowInputKategoriBaru] = useState(false);
   const [kategoriBaru, setKategoriBaru] = useState("");
 
   useEffect(() => {
-    if (initialData) {
-      setFormData((prev) => ({
-        ...prev,
-        ...initialData,
-      }));
+    setFormData(initialData);
+    if (isOpen) fetchKategori();
+  }, [initialData, isOpen]);
+
+  const fetchKategori = async () => {
+    try {
+      const res = await axios.get(
+        "https://grx6wqmr-3004.asse.devtunnels.ms/product/kategori"
+      );
+      const data = res.data.map((item: any) => item.nama);
+      setKategoriList(data);
+    } catch (error) {
+      console.error("Gagal mengambil kategori:", error);
     }
-  }, [initialData]);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -50,90 +54,90 @@ const ModalUpdateProduk: React.FC<ModalProps> = ({
 
   const handleSubmit = async () => {
     try {
-      // Validasi sederhana
-      if (!formData.nama || !formData.kategori || !formData.harga) {
-        alert("Nama, kategori, dan harga wajib diisi.");
-        return;
+      const finalKategori = showInputKategoriBaru
+        ? kategoriBaru.trim()
+        : formData.kategori;
+
+      if (showInputKategoriBaru && finalKategori) {
+        await axios.post(
+          "https://grx6wqmr-3004.asse.devtunnels.ms/product/kategori/tambah",
+          { nama: finalKategori }
+        );
+        await fetchKategori();
       }
 
       const payload = {
         nama: formData.nama,
-        kategori: formData.kategori,
         harga: parseFloat(formData.harga),
-        hargabeli: parseFloat(formData.hargabeli),
-        hargaGrosir: parseFloat(formData.hargaGrosir),
-        stok: formData.stok ? parseFloat(formData.stok) : undefined,
+        hargabeli: parseFloat(formData.hargabeli || "0"),
+        kategori: finalKategori,
+        stok: parseFloat(formData.stok),
+        stokbaru: parseFloat(formData.stokbaru || "0"),
         setpack: formData.setpack,
+        hargaGrosir: parseFloat(formData.hargaGrosir),
       };
 
-      console.log("Mengirim payload update:", payload);
-
-      const res = await axios.post(
+      await axios.post(
         `https://grx6wqmr-3004.asse.devtunnels.ms/product/update_produk/${initialData.id}`,
         payload
       );
 
-      if (res.status === 200) {
-        console.log("Update berhasil:", res.data);
-        onSuccess();
-        onClose();
-      } else {
-        console.warn("Update tidak berhasil:", res);
-        alert("Gagal update produk. Silakan coba lagi.");
-      }
-    } catch (error: any) {
-      console.error("Gagal update produk:", error);
-      alert("Terjadi kesalahan saat menyimpan data.");
+      onSuccess();
+      onClose();
+    } catch (error) {
+      console.error("Gagal mengupdate produk:", error);
     }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-opacity-50 z-50 flex justify-center items-center px-4">
-      <div className="bg-white text-black rounded-xl p-6 w-full max-w-lg shadow-xl">
+    <div className="fixed inset-0 bg-opacity-40 z-50 flex items-center justify-center px-4">
+      <div className="bg-white text-black rounded-xl w-full max-w-lg p-6 shadow-xl">
         <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
-          Edit Produk
+          Update Produk
         </h2>
 
         <div className="space-y-4">
+          {/* Input umum */}
           {[
-            { label: "Nama Produk", name: "nama" },
-            { label: "Harga Jual", name: "harga" },
-            { label: "Harga Beli", name: "hargabeli" },
-            { label: "Harga Grosir", name: "hargaGrosir" },
-            { label: "Setpack", name: "setpack" },
-            { label: "Tambah Stok", name: "stok" },
+            "nama",
+            "harga",
+            "hargabeli",
+            "stok",
+            "stokbaru",
+            "setpack",
+            "hargaGrosir",
           ].map((field) => (
-            <div key={field.name} className="flex flex-col">
+            <div key={field} className="flex flex-col">
               <label className="mb-1 text-sm font-medium text-gray-700">
-                {field.label}
+                {field.charAt(0).toUpperCase() + field.slice(1)}
               </label>
               <input
                 type="text"
-                name={field.name}
-                value={formData[field.name as keyof typeof formData]}
+                name={field}
+                value={formData[field as keyof typeof formData] || ""}
                 onChange={handleChange}
-                className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-100"
+                className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
           ))}
 
-          {/* Kategori */}
+          {/* Kategori dropdown */}
           <div className="flex flex-col">
             <label className="mb-1 text-sm font-medium text-gray-700">
               Kategori
             </label>
-            {showKategoriBaru ? (
+
+            {showInputKategoriBaru ? (
               <input
                 type="text"
-                name="kategori"
-                placeholder="Kategori baru..."
                 value={kategoriBaru}
                 onChange={(e) => {
                   setKategoriBaru(e.target.value);
                   setFormData({ ...formData, kategori: e.target.value });
                 }}
+                placeholder="Kategori baru..."
                 className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             ) : (
@@ -144,27 +148,30 @@ const ModalUpdateProduk: React.FC<ModalProps> = ({
                 className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
                 <option value="">Pilih Kategori</option>
-                <option value="pakan">Pakan</option>
-                <option value="sembako">Sembako</option>
+                {kategoriList.map((kat, idx) => (
+                  <option key={idx} value={kat}>
+                    {kat}
+                  </option>
+                ))}
               </select>
             )}
+
             <button
               type="button"
               onClick={() => {
-                setShowKategoriBaru(!showKategoriBaru);
+                setShowInputKategoriBaru(!showInputKategoriBaru);
                 setKategoriBaru("");
               }}
-              className="mt-1 text-white text-sm hover:underline text-left"
-              style={{ backgroundColor: "#4D81F1" }}
+              className="text-white mt-1 text-sm hover:underline text-left"
+              style={{ background: "#4D81F1" }}
             >
-              {showKategoriBaru
+              {showInputKategoriBaru
                 ? "Pilih dari daftar"
                 : "+ Tambah kategori baru"}
             </button>
           </div>
         </div>
 
-        {/* Tombol aksi */}
         <div className="flex justify-end gap-4 mt-6">
           <button
             onClick={onClose}
@@ -178,7 +185,7 @@ const ModalUpdateProduk: React.FC<ModalProps> = ({
             className="px-4 py-2 rounded-lg text-white hover:bg-blue-600 transition"
             style={{ backgroundColor: "#4D81F1" }}
           >
-            Simpan
+            Konfirmasi
           </button>
         </div>
       </div>
@@ -186,4 +193,4 @@ const ModalUpdateProduk: React.FC<ModalProps> = ({
   );
 };
 
-export default ModalUpdateProduk;
+export default UpdateProduk;
