@@ -23,17 +23,20 @@ const Kalkulator: React.FC<KalkulatorProps> = ({
   onOpenMix,
 }) => {
   return (
-    <div className="bg-white p-6 rounded-xl shadow-xl border">
+    <div className="bg-white p-4 sm:p-6 rounded-xl shadow-xl border w-full">
       <h3 className="text-xl font-bold text-black mb-4 text-center">
         Kalkulator
       </h3>
 
-      <div className="flex items-center mb-4">
-        <label className="mr-3 font-semibold text-sm">Nama Pelanggan:</label>
+      {/* Input Nama Pelanggan */}
+      <div className="mb-4 w-full">
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Nama Pelanggan:
+        </label>
         <input
           type="text"
-          className="flex-1 px-4 py-1 border rounded-md bg-gray-200 text-sm"
-          placeholder="Masukkan nama"
+          className="w-full px-4 py-2 border rounded-md bg-gray-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200"
+          placeholder="Masukkan nama pelanggan"
           value={namaPelanggan}
           onChange={(e) => setNamaPelanggan(e.target.value)}
         />
@@ -41,15 +44,18 @@ const Kalkulator: React.FC<KalkulatorProps> = ({
 
       <hr className="my-3" />
 
-      <div className="space-y-4">
+      <div className="space-y-4 max-h-[40vh] overflow-y-auto pr-1">
         {/* Produk Biasa */}
         {produkDipilih
           .filter((item) => item.tipe !== "Mix")
           .map((item, idx) => (
-            <div key={idx} className="p-3 bg-[#F9FAFB] relative">
-              <div className="flex justify-between items-center">
+            <div
+              key={idx}
+              className="p-3 bg-[#F9FAFB] relative rounded-lg border"
+            >
+              <div className="flex justify-between items-center flex-wrap gap-2">
                 <div>
-                  <p className="font-bold text-sm">
+                  <p className="font-bold text-sm flex items-center">
                     {item.nama}
                     <button
                       onClick={onOpenMix}
@@ -69,15 +75,16 @@ const Kalkulator: React.FC<KalkulatorProps> = ({
                   <FaTrash />
                 </button>
               </div>
-              <div className="mt-2">
-                <label className="text-xs">Pcs = </label>
+              <div className="mt-2 flex items-center gap-2 text-sm">
+                <label>Pcs:</label>
                 <input
                   type="number"
                   value={item.pcs}
+                  min={1}
                   onChange={(e) =>
                     updatePcs(idx, parseInt(e.target.value || "1"))
                   }
-                  className="border text-sm px-2 py-0.5 rounded-md ml-2"
+                  className="border px-2 py-0.5 rounded-md w-20"
                 />
               </div>
             </div>
@@ -96,8 +103,8 @@ const Kalkulator: React.FC<KalkulatorProps> = ({
           );
 
           return (
-            <div className="p-3 bg-[#F9FAFB] relative">
-              <div className="flex justify-between items-center">
+            <div className="p-3 bg-[#F9FAFB] relative rounded-lg border">
+              <div className="flex justify-between items-center flex-wrap gap-2">
                 <div>
                   <p className="font-bold text-sm flex items-center">
                     {namaGabung}
@@ -127,6 +134,8 @@ const Kalkulator: React.FC<KalkulatorProps> = ({
       </div>
 
       <hr className="my-4" />
+
+      {/* Ringkasan Harga */}
       {(namaPelanggan || produkDipilih.some((item) => item.tipe === "Mix")) && (
         <div className="text-sm text-black space-y-1">
           {produkDipilih.some((item) => item.tipe === "Mix") && (
@@ -159,7 +168,7 @@ const Kalkulator: React.FC<KalkulatorProps> = ({
         <span>Rp {totalHarga.toLocaleString("id-ID")}</span>
       </div>
 
-      <button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-xl">
+      <button className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-xl transition">
         Beli
       </button>
     </div>
