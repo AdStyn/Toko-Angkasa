@@ -28,6 +28,10 @@ router.post("/add_produk", async (req, res) => {
   try {
     const { nama, harga, hargabeli, kategori, stok, setpack, hargaGrosir } =
       req.body;
+    const product = await models.produk.findByPk(id);
+    if (produkct) {
+      return res.status(404).json({ message: "Produk tidak ditemukan" });
+    }
     let kategoriData = await models.kategori.findOne({
       where: { nama: kategori },
     });

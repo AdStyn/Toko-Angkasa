@@ -30,18 +30,40 @@ router.get("/pengeluaran", async (req, res) => {
     res.status(500).json({ message: "Gagal mengambil data pengeluaran" });
   }
 });
-router.post("/transaksi", async (req, res) => {
+router.post("/pembelian", async (req, res) => {
   try {
-    const { pembeli, stok, kategoriid, harga, produk, tanggal } = req.body;
-    const pembayaran = await models.historipembelian.create({
-      pembeli,
-      stok,
-      kategoriid,
-      harga,
-      produk,
-      tanggal,
-    });
-    res.json(pembayaran);
+    const { pembeli, tanggal, items } = req.body;
+    if (!Array.isArray(items) || items.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Item pembelian kosong atau tidak sesuai format" });
+    }
+    const hasilTransaksi = [];
+    for (const item of items) {
+      const { produkId, stok, kategoriId, harga } = item;
+      const produk = await models.produk.findByPk(produkId);
+      if (!produk || produk.stok < stok) {
+        return res
+          .status(400)
+          .json({ message: `Stok tidak cukup untuk produk ID: ${produkId}` });
+      }
+      const transaksi = await models.historipembelian.create({
+        pembeli,
+        produkId,
+        stok,
+        kategoriId,
+        harga,
+        tanggal,
+        totalHarga: stok * harga,
+      });
+      await produk.update({
+        stok: produk.stok - stok,
+      });
+      hasilTransaksi.push(transaksi);
+    }
+    res
+      .status(200)
+      .json({ message: "Transaksi berhasil", data: hasilTransaksi });
   } catch (error) {}
 });
 module.exports = router;
