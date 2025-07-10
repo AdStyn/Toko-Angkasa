@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 interface ModalProps {
@@ -18,8 +18,21 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
     stok: "",
   });
 
+  const [kategoriList, setKategoriList] = useState<string[]>([]);
   const [kategoriBaru, setKategoriBaru] = useState("");
   const [showInputKategoriBaru, setShowInputKategoriBaru] = useState(false);
+
+  const fetchKategori = async () => {
+    try {
+      const res = await axios.get(
+        "https://grx6wqmr-3004.asse.devtunnels.ms/product/kategori"
+      );
+      const data = res.data.map((item: any) => item.nama);
+      setKategoriList(data);
+    } catch (error) {
+      console.error("Gagal mengambil kategori:", error);
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -29,8 +42,13 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
 
   const handleSubmit = async () => {
     try {
+      const kategoriFinal = showInputKategoriBaru
+        ? kategoriBaru
+        : formData.kategori;
+
       const payload = {
         ...formData,
+        kategori: kategoriFinal,
         harga: parseFloat(formData.harga),
         hargabeli: parseFloat(formData.hargabeli),
         hargaGrosir: parseFloat(formData.hargaGrosir),
@@ -49,6 +67,12 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
     }
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      fetchKategori();
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -59,7 +83,6 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
         </h2>
 
         <div className="space-y-4">
-          {/* Field Umum */}
           {[
             { label: "Nama Produk", name: "nama" },
             { label: "Harga Jual", name: "harga" },
@@ -77,12 +100,11 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
                 name={field.name}
                 value={formData[field.name as keyof typeof formData]}
                 onChange={handleChange}
-                className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-100"
+                className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
           ))}
 
-          {/* Kategori */}
           <div className="flex flex-col">
             <label className="mb-1 text-sm font-medium text-gray-700">
               Kategori
@@ -93,10 +115,7 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
                 name="kategori"
                 placeholder="Kategori baru..."
                 value={kategoriBaru}
-                onChange={(e) => {
-                  setKategoriBaru(e.target.value);
-                  setFormData({ ...formData, kategori: e.target.value });
-                }}
+                onChange={(e) => setKategoriBaru(e.target.value)}
                 className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             ) : (
@@ -107,8 +126,11 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
                 className="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
                 <option value="">Pilih Kategori</option>
-                <option value="pakan">Pakan</option>
-                <option value="sembako">Sembako</option>
+                {kategoriList.map((kat, idx) => (
+                  <option key={idx} value={kat}>
+                    {kat}
+                  </option>
+                ))}
               </select>
             )}
             <button
@@ -118,7 +140,7 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
                 setKategoriBaru("");
               }}
               className="text-white mt-1 text-sm hover:underline text-left"
-              style={{ backgroundColor: "#4D81F1" }}
+              style={{ background: "#4D81F1" }}
             >
               {showInputKategoriBaru
                 ? "Pilih dari daftar"
@@ -127,7 +149,6 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
           </div>
         </div>
 
-        {/* Tombol Aksi */}
         <div className="flex justify-end gap-4 mt-6">
           <button
             onClick={onClose}
@@ -138,7 +159,7 @@ const TambahProduk: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess }) => {
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 rounded-lg  text-white hover:bg-blue-600 transition"
+            className="px-4 py-2 rounded-lg text-white hover:bg-blue-600 transition"
             style={{ backgroundColor: "#4D81F1" }}
           >
             Konfirmasi
